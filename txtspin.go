@@ -114,9 +114,8 @@ func NewCustom(frames []string, speed time.Duration) Spinner {
 	spinner := func(f func(), msg string) {
 		sig := make(chan struct{})
 		defer close(sig)
-		fmt.Print(msg)
 		if msg != "" {
-			fmt.Print(" ")
+			fmt.Print(msg, " ")
 		}
 		go animate(sig)
 		f()
