@@ -10,16 +10,16 @@ import (
 )
 
 var (
-	baseTaskLen uint
-	speed       uint
-	cycles      uint
-	style       string
-	framestr    string
-	framesep    string
+	tasklen  uint
+	speed    uint
+	cycles   uint
+	style    string
+	framestr string
+	framesep string
 )
 
 func main() {
-	flag.UintVar(&baseTaskLen, "tasklen", 750, "base duration of tasks in milliseconds")
+	flag.UintVar(&tasklen, "tasklen", 2000, "duration of tasks in milliseconds")
 	flag.UintVar(&speed, "speed", 0, "time in milliseconds between frames")
 	flag.UintVar(&cycles, "cycles", 1, "number of times cycle should repeat (0=forever)")
 	flag.StringVar(&style, "style", "", "comma-separated names of styles to use for messages")
@@ -49,21 +49,17 @@ func run() error {
 			"doing a long thing",
 			"doing the next operation",
 			"it'll work this time",
-			"finising up",
+			"finishing up",
 			"okay, we should be finished after this, the longest part",
 			"no, wait, there's something else that takes longer, my bad",
 		}
 	)
 	for cont() {
-		for i, msg := range messages {
-			task := func() {
-				var (
-					multiplier = i%len(messages) + 1
-					dur        = time.Duration(baseTaskLen*uint(multiplier)) * time.Millisecond
-				)
-				time.Sleep(dur)
-			}
-			spinner := spinners[i%len(spinners)]
+		for i, spinner := range spinners {
+			var (
+				task = func() { time.Sleep(time.Duration(tasklen) * time.Millisecond) }
+				msg  = messages[i%len(messages)]
+			)
 			spinner(task, msg)
 		}
 	}
