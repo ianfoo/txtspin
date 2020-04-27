@@ -51,6 +51,8 @@ const (
 		"<<------ " +
 		"<------- " +
 		"--------"
+	StyleEyes  = "-_- o_- o_o O_o O_O o_O o_o -_o"
+	StyleBlink = "o_o o_o o_o o_o o_o >_< -_- >_<"
 
 	StyleDefault = StyleSpinner
 )

@@ -13,6 +13,7 @@ var (
 	baseTaskLen uint
 	speed       uint
 	cycles      uint
+	style       string
 	framestr    string
 	framesep    string
 )
@@ -21,6 +22,7 @@ func main() {
 	flag.UintVar(&baseTaskLen, "tasklen", 750, "base duration of tasks in milliseconds")
 	flag.UintVar(&speed, "speed", 0, "time in milliseconds between frames")
 	flag.UintVar(&cycles, "cycles", 1, "number of times cycle should repeat (0=forever)")
+	flag.StringVar(&style, "style", "", "comma-separated names of styles to use for messages")
 	flag.StringVar(&framestr, "frames", "", "string of frames in animation sequence")
 	flag.StringVar(&framesep, "framesep", "", "separator between frames in frame string")
 	flag.Parse()
@@ -46,15 +48,19 @@ func run() error {
 		messages = []string{
 			"doing a long thing",
 			"doing the next operation",
-			"third time's a charm",
-			"part four, should be finished after this, the longest part",
-			"no, wait, there's one more thing that's longer, chump, lol",
+			"it'll work this time",
+			"finising up",
+			"okay, we should be finished after this, the longest part",
+			"no, wait, there's something else that takes longer, my bad",
 		}
 	)
 	for cont() {
 		for i, msg := range messages {
 			task := func() {
-				dur := time.Duration(baseTaskLen*uint(i+1)) * time.Millisecond
+				var (
+					multiplier = i%len(messages) + 1
+					dur        = time.Duration(baseTaskLen*uint(multiplier)) * time.Millisecond
+				)
 				time.Sleep(dur)
 			}
 			spinner := spinners[i%len(spinners)]
@@ -73,17 +79,41 @@ func getSpinners() []txtspin.Spinner {
 		frames := strings.Split(framestr, framesep)
 		return []txtspin.Spinner{txtspin.NewCustom(frames, frameSpeed)}
 	}
-	return []txtspin.Spinner{
-		txtspin.New(txtspin.StyleSpinner, frameSpeed),
-		txtspin.New(txtspin.StyleChompy, frameSpeed),
-		txtspin.New(txtspin.StyleOoh, frameSpeed),
+	var (
+		spinnerMap = map[string]txtspin.Spinner{
+			"spinner": txtspin.New(txtspin.StyleSpinner, frameSpeed),
+			"chompy":  txtspin.New(txtspin.StyleChompy, frameSpeed),
+			"ooh":     txtspin.New(txtspin.StyleOoh, frameSpeed),
+			"eyes":    txtspin.New(txtspin.StyleEyes, frameSpeed),
+			"blink":   txtspin.New(txtspin.StyleBlink, frameSpeed),
 
-		// I think Flow and PingPong look a little better faster than
-		// the single-char-width spinners, so scale frameSpeed to make
-		// them run a bit faster.
-		txtspin.New(txtspin.StyleFlow, frameSpeed/2),
-		txtspin.New(txtspin.StylePingPong, frameSpeed/2),
+			// I think Flow and PingPong look a little better faster than
+			// the single-char-width spinners, so scale frameSpeed to make
+			// them run a bit faster.
+			"flow":     txtspin.New(txtspin.StyleFlow, frameSpeed/2),
+			"pingpong": txtspin.New(txtspin.StylePingPong, frameSpeed/2),
+		}
+		spinners []txtspin.Spinner
+		styles   = strings.Split(style, ",")
+	)
+	for _, s := range styles {
+		if spinner, ok := spinnerMap[s]; ok {
+			spinners = append(spinners, spinner)
+		}
 	}
+	if len(spinners) > 0 {
+		return spinners
+	}
+	all := []txtspin.Spinner{
+		spinnerMap["spinner"],
+		spinnerMap["chompy"],
+		spinnerMap["ooh"],
+		spinnerMap["eyes"],
+		spinnerMap["blink"],
+		spinnerMap["flow"],
+		spinnerMap["pingpong"],
+	}
+	return all
 }
 
 func mkWait(d time.Duration) func() error {
