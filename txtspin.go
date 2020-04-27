@@ -53,8 +53,8 @@ const (
 	StyleDefault = StyleSpinner
 )
 
-// Spinner is a function that will run f and display a spinner as it runs, as
-// configured by New or NewCustom.
+// Spinner is a function that will run f and display a spinner and an optional
+// message as it runs, as configured by New or NewCustom.
 type Spinner func(f func(), msg string)
 
 // New returns a Spinner with the animation frames passed as a space-separated
