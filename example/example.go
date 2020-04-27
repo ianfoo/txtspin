@@ -66,6 +66,9 @@ func run() error {
 
 func getSpinners() []txtspin.Spinner {
 	frameSpeed := time.Duration(speed) * time.Millisecond
+	if frameSpeed == 0 {
+		frameSpeed = txtspin.SpeedDefault
+	}
 	if framestr != "" {
 		frames := strings.Split(framestr, framesep)
 		return []txtspin.Spinner{txtspin.NewCustom(frames, frameSpeed)}
@@ -74,8 +77,12 @@ func getSpinners() []txtspin.Spinner {
 		txtspin.New(txtspin.StyleSpinner, frameSpeed),
 		txtspin.New(txtspin.StyleChompy, frameSpeed),
 		txtspin.New(txtspin.StyleOoh, frameSpeed),
-		txtspin.New(txtspin.StyleFlow, frameSpeed),
-		txtspin.New(txtspin.StylePingPong, frameSpeed),
+
+		// I think Flow and PingPong look a little better faster than
+		// the single-char-width spinners, so scale frameSpeed to make
+		// them run a bit faster.
+		txtspin.New(txtspin.StyleFlow, frameSpeed/2),
+		txtspin.New(txtspin.StylePingPong, frameSpeed/2),
 	}
 }
 
