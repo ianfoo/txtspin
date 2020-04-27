@@ -7,7 +7,7 @@ A number of default Spinners are defined, or you can create one with a slice of
 strings as the frames of the animation. Run `example/example.go` to see a quick
 demo of the defined styles, or experiment with different patterns and speeds.
 
-[![Asciicast demo: click to visit](demo.gif)](https://asciinema.org/a/xWh9tMnX0sXwhNFcyRq0nqMyW)
+[![Asciicast demo: click to visit](demo.gif)](https://asciinema.org/a/900g21skEz48Q9lEhsj0Nqu81)
 
 
 ### Tip
