@@ -1,16 +1,38 @@
-# txtspinner
+# txtspin
 
-A little Go program that implements a spinner for tty-based messages.
+A little Go package that adds a spinner and an optional message to
+tasks that may take a minute to run.
 
-Configurable with command line args for animation speed, number of
-cycles of the sample messages, the base length of the sample tasks, and
-the characters in the animation.
+A number of default Spinners are defined, or you can create one with a slice of
+strings as the frames of the animation. Run `example/example.go` to see a quick
+demo of the defined styles, or experiment with different patterns and speeds.
 
-### Tips
+[![Asciicast demo: click to visit](demo.gif)](https://asciinema.org/a/xWh9tMnX0sXwhNFcyRq0nqMyW)
 
-The animation loops through the sequence of characters in a single direction,
-so you can get spinners using a set of distinct characters, or create a back
-and forth by typing out the pattern in reverse except for the last character.
 
-E.g., try `-<C<` and `.oOo` for some different but kinda cool effects.
+### Tip
 
+For best flexibility, the `Spinner` function takes a function that takes takes
+no parameters and returns nothing. If the operation you want to call takes
+arguments, or returns values, just wrap it in a small function that closes over
+values that you can inspect after the operation has finished.
+```
+var (
+	err    error
+	result Result
+	f             = func() { result, err = MyPossiblyErroringOperation(arg) }
+	spinner       = txtspin.New(txtspin.StyleDefault)
+)
+spinner(f, "running slow op!")
+
+```
+
+
+### Caveats
+
+This should only be used if it's known that the output is bound for a TTY.
+You can use [go-isatty](https://github.com/mattn/go-isatty) to determine
+this.
+
+This was written for fun late one night and carries the commensurate
+guarantees of stability and well-testedness.

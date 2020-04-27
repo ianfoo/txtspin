@@ -46,8 +46,8 @@ func run() error {
 		messages = []string{
 			"doing a long thing",
 			"doing the next operation",
-			"third time's a charm: longest part",
-			"part four, should be finished after this",
+			"third time's a charm",
+			"part four, should be finished after this, the longest part",
 			"no, wait, there's one more thing that's longer, chump, lol",
 		}
 	)
